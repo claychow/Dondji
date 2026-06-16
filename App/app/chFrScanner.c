@@ -3,6 +3,9 @@
 #include <string.h>
 
 #include "app/app.h"
+#ifdef ENABLE_CAMP_MODE
+#include "app/camp.h"
+#endif
 #include "app/chFrScanner.h"
 #include "audio.h"
 #ifdef ENABLE_FEAT_F4HWN_SCAN_FASTER
@@ -593,6 +596,9 @@ static void ScanRangeFastRefineCandidate(uint16_t firstRssi)
         const uint32_t prevRxFrequency = gRxVfo->pRX->Frequency;
 
         gRxVfo->freq_config_RX.Frequency = ScanRangeNextFrequency();
+#ifdef ENABLE_CAMP_MODE
+        CAMP_UpdateScanSegment();
+#endif
         RADIO_ApplyOffset(gRxVfo);
 
         const uint32_t freq = gRxVfo->pRX->Frequency;
@@ -619,6 +625,9 @@ static void ScanRangeFastRefineCandidate(uint16_t firstRssi)
     }
 
     gRxVfo->freq_config_RX.Frequency = bestFrequency;
+#ifdef ENABLE_CAMP_MODE
+    CAMP_UpdateScanSegment();
+#endif
     RADIO_ApplyOffset(gRxVfo);
     ScanFastTune(gRxVfo->pRX->Frequency);
 }
@@ -981,6 +990,9 @@ void CHFRSCANNER_Stop(void)
     #endif
 
     RADIO_SetupRegisters(true);
+#ifdef ENABLE_CAMP_MODE
+    CAMP_Stop();
+#endif
     gUpdateDisplay = true;
 }
 
@@ -1029,6 +1041,9 @@ static void NextFreqChannel(void)
         gRxVfo->freq_config_RX.Frequency = APP_SetFrequencyByStep(gRxVfo, gScanStateDir);
     }
 
+#ifdef ENABLE_CAMP_MODE
+    CAMP_UpdateScanSegment();
+#endif
     RADIO_ApplyOffset(gRxVfo);
     RADIO_ConfigureSquelchAndOutputPower(gRxVfo);
     RADIO_SetupRegisters(true);

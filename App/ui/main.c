@@ -18,6 +18,9 @@
 #include <stdlib.h>  // abs()
 
 #include "app/app.h"
+#ifdef ENABLE_CAMP_MODE
+    #include "app/camp.h"
+#endif
 #include "app/chFrScanner.h"
 #include "app/dtmf.h"
 
@@ -1345,7 +1348,12 @@ void UI_DisplayMain(void)
                         shift = 3;
                     }
 
-                    UI_PrintString("ScnRng", 7, 0, line + shift, 8);
+                    UI_PrintString(
+#ifdef ENABLE_CAMP_MODE
+                        CAMP_IsActive() ? CAMP_GetActiveLabel() :
+#endif
+                        "ScnRng",
+                        7, 0, line + shift, 8);
                     UI_FormatFrequency(gScanRangeStart, String);
                     UI_PrintStringSmallNormal(String, 56, 0, line + shift);
                     UI_FormatFrequency(gScanRangeStop, String);
@@ -1364,7 +1372,12 @@ void UI_DisplayMain(void)
                     gScanRangeStart = 0;
                 }
 #else
-                UI_PrintString("ScnRng", 7, 0, line, 8);
+                UI_PrintString(
+#ifdef ENABLE_CAMP_MODE
+                    CAMP_IsActive() ? CAMP_GetActiveLabel() :
+#endif
+                    "ScnRng",
+                    7, 0, line, 8);
                 UI_FormatFrequency(gScanRangeStart, String);
                 UI_PrintStringSmallNormal(String, 56, 0, line);
                 UI_FormatFrequency(gScanRangeStop, String);

@@ -525,6 +525,11 @@ const t_sidefunction gSubMenu_SIDEFUNCTIONS[] =
         {"BEAM",            ACTION_OPT_BEAM},
     #endif
 #endif
+#ifdef ENABLE_CAMP_MODE
+    {"AIR\nSCAN",       ACTION_OPT_CAMP_AIR},
+    {"SEA\nSCAN",       ACTION_OPT_CAMP_SEA},
+    {"CAMP\nSAVE",      ACTION_OPT_CAMP_SAVE},
+#endif
 };
 
 const uint8_t gSubMenu_SIDEFUNCTIONS_size = ARRAY_SIZE(gSubMenu_SIDEFUNCTIONS);

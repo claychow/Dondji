@@ -39,11 +39,13 @@
                 "ENABLE_FASTER_CHANNEL_SCAN": true,
                 "ENABLE_RSSI_BAR": true,
                 "ENABLE_AUDIO_BAR": true,
+                "ENABLE_AM_FIX": false,
                 "ENABLE_COPY_CHAN_TO_VFO": true,
                 "ENABLE_REDUCE_LOW_MID_TX_POWER": false,
                 "ENABLE_BYP_RAW_DEMODULATORS": false,
                 "ENABLE_BLMIN_TMP_OFF": false,
                 "ENABLE_SCAN_RANGES": true,
+                "ENABLE_CAMP_MODE": false,
                 "ENABLE_REGA": false,
                 "ENABLE_EXTRA_UART_CMD": false,
                 "ENABLE_FEAT_F4HWN": true,
@@ -184,6 +186,35 @@
             }
         },
         {
+            "name": "Camp",
+            "inherits": "default",
+            "cacheVariables": {
+                "ENABLE_CAMP_MODE": true,
+                "ENABLE_AM_FIX": true,
+                "ENABLE_SPECTRUM": false,
+                "ENABLE_FMRADIO": false,
+                "ENABLE_VOX": false,
+                "ENABLE_AIRCOPY": false,
+                "ENABLE_FEAT_F4HWN_SCREENSHOT": false,
+                "ENABLE_FEAT_F4HWN_GAME": false,
+                "ENABLE_FEAT_F4HWN_SPECTRUM": false,
+                "ENABLE_FEAT_F4HWN_RESCUE_OPS": false,
+                "ENABLE_FEAT_F4HWN_AUDIO": true,
+                "ENABLE_FEAT_F4HWN_AUDIO_SCOPE": false,
+                "ENABLE_FEAT_F4HWN_SCAN_PROGRESS": true,
+                "ENABLE_FEAT_F4HWN_SCAN_FASTER": true,
+                "ENABLE_FEAT_F4HWN_SCAN_RSSI": true,
+                "ENABLE_FEAT_F4HWN_SCAN_SUBAUDIBLE": false,
+                "ENABLE_FEAT_F4HWN_BEAM": false,
+                "ENABLE_FEAT_F4HWN_QRCODE": false,
+                "ENABLE_FEAT_F4HWN_MEM": false,
+                "ENABLE_FEAT_F4HWN_LOGO": false,
+                "ENABLE_FEAT_F4HWN_LOGO_SAV": false,
+                "EDITION_STRING": "Camp",
+                "TARGET": "f4hwn.camp"
+            }
+        },
+        {
             "name": "Fusion",
             "inherits": "default",
             "cacheVariables": {
@@ -238,6 +269,10 @@
         {
             "name": "Game",
             "configurePreset": "Game"
+        },
+        {
+            "name": "Camp",
+            "configurePreset": "Camp"
         },
         {
             "name": "Fusion",

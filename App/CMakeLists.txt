@@ -162,12 +162,22 @@ enable_feature(ENABLE_SQUELCH_MORE_SENSITIVE)
 enable_feature(ENABLE_FASTER_CHANNEL_SCAN)
 enable_feature(ENABLE_RSSI_BAR)
 enable_feature(ENABLE_AUDIO_BAR)
+enable_feature(ENABLE_AM_FIX
+    am_fix.c
+)
 enable_feature(ENABLE_FEAT_F4HWN_AUDIO_SCOPE)
 enable_feature(ENABLE_COPY_CHAN_TO_VFO)
 enable_feature(ENABLE_REDUCE_LOW_MID_TX_POWER)
 enable_feature(ENABLE_BYP_RAW_DEMODULATORS)
 enable_feature(ENABLE_BLMIN_TMP_OFF)
 enable_feature(ENABLE_SCAN_RANGES)
+enable_feature(ENABLE_CAMP_MODE
+    app/camp.c
+)
+
+if(ENABLE_CAMP_MODE AND NOT ENABLE_SCAN_RANGES)
+    message(FATAL_ERROR "ENABLE_CAMP_MODE requires ENABLE_SCAN_RANGES.")
+endif()
 
 # ---- CONTRIB MODS ----
 

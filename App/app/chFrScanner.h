@@ -49,5 +49,9 @@ uint8_t CHFRSCANNER_GetScanRssiSparklineLevel(uint8_t index);
     extern uint32_t lastFoundFrqOrChan;
     extern uint32_t lastFoundFrqOrChanOld;
 #endif
+#ifdef ENABLE_CAMP_MODE
+    extern uint32_t initialFrqOrChan;
+    extern uint32_t lastFoundFrqOrChan;
+#endif
 
 #endif

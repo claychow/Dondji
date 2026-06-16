@@ -9,6 +9,8 @@ compile_commands.json
 .vscode
 .claude
 /docs
+!/docs/
+!/docs/camp-mode.md
 k5_eeprom.raw
 
 /build
