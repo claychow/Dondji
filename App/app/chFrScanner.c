@@ -1,5 +1,8 @@
 
 #include "app/app.h"
+#ifdef ENABLE_CAMP_MODE
+#include "app/camp.h"
+#endif
 #include "app/chFrScanner.h"
 #include "functions.h"
 #include "misc.h"
@@ -237,6 +240,9 @@ void CHFRSCANNER_Stop(void)
     #endif
 
     RADIO_SetupRegisters(true);
+#ifdef ENABLE_CAMP_MODE
+    CAMP_Stop();
+#endif
     gUpdateDisplay = true;
 }
 
@@ -250,6 +256,9 @@ static void NextFreqChannel(void)
 #endif
         gRxVfo->freq_config_RX.Frequency = APP_SetFrequencyByStep(gRxVfo, gScanStateDir);
 
+#ifdef ENABLE_CAMP_MODE
+    CAMP_UpdateScanSegment();
+#endif
     RADIO_ApplyOffset(gRxVfo);
     RADIO_ConfigureSquelchAndOutputPower(gRxVfo);
     RADIO_SetupRegisters(true);

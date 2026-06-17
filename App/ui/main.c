@@ -17,6 +17,9 @@
 #include <string.h>
 #include <stdlib.h>  // abs()
 
+#ifdef ENABLE_CAMP_MODE
+    #include "app/camp.h"
+#endif
 #include "app/chFrScanner.h"
 #include "app/dtmf.h"
 #include "app/mdc1200.h"
@@ -2687,7 +2690,12 @@ void UI_DisplayMain(void)
                         UI_PrintStringSmallAtPixel("频率范围", 5, 55, y0, (uint8_t)(y0 + 7u), 0);
                     else
 #endif
-                    UI_PrintStringSmallAtPixel("ScnRng", 5, 55, y0, (uint8_t)(y0 + 7u), 0);
+                    UI_PrintStringSmallAtPixel(
+#ifdef ENABLE_CAMP_MODE
+                        CAMP_IsActive() ? CAMP_GetActiveLabel() :
+#endif
+                        "ScnRng",
+                        5, 55, y0, (uint8_t)(y0 + 7u), 0);
                     sprintf(String, "%3u.%05u", gScanRangeStart / 100000, gScanRangeStart % 100000);
                     UI_PrintStringSmallAtPixel(String, 59, 127, y0, (uint8_t)(y0 + 7u), 0);
                     sprintf(String, "%3u.%05u", gScanRangeStop / 100000, gScanRangeStop % 100000);
@@ -2703,7 +2711,12 @@ void UI_DisplayMain(void)
                     UI_PrintStringSmallAtPixel("频率范围", 5, 55, y0, (uint8_t)(y0 + 7u), 0);
                 else
 #endif
-                UI_PrintStringSmallAtPixel("ScnRng", 5, 55, y0, (uint8_t)(y0 + 7u), 0);
+                UI_PrintStringSmallAtPixel(
+#ifdef ENABLE_CAMP_MODE
+                    CAMP_IsActive() ? CAMP_GetActiveLabel() :
+#endif
+                    "ScnRng",
+                    5, 55, y0, (uint8_t)(y0 + 7u), 0);
                 sprintf(String, "%3u.%05u", gScanRangeStart / 100000, gScanRangeStart % 100000);
                 UI_PrintStringSmallAtPixel(String, 59, 127, y0, (uint8_t)(y0 + 7u), 0);
                 sprintf(String, "%3u.%05u", gScanRangeStop / 100000, gScanRangeStop % 100000);

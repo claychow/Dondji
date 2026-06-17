@@ -40,11 +40,13 @@
                 "ENABLE_FASTER_CHANNEL_SCAN": true,
                 "ENABLE_RSSI_BAR": true,
                 "ENABLE_AUDIO_BAR": true,
+                "ENABLE_AM_FIX": false,
                 "ENABLE_COPY_CHAN_TO_VFO": true,
                 "ENABLE_REDUCE_LOW_MID_TX_POWER": false,
                 "ENABLE_BYP_RAW_DEMODULATORS": false,
                 "ENABLE_BLMIN_TMP_OFF": false,
                 "ENABLE_SCAN_RANGES": true,
+                "ENABLE_CAMP_MODE": false,
                 "ENABLE_REGA": false,
                 "ENABLE_EXTRA_UART_CMD": false,
                 "ENABLE_FEAT_F4HWN": true,
@@ -205,6 +207,8 @@
                 "ENABLE_FEAT_F4HWN_AUDIO": false,
                 "ENABLE_FEAT_F4HWN_AUDIO_SCOPE": false,
                 "ENABLE_VOICE": false,
+                "ENABLE_AM_FIX": true,
+                "ENABLE_CAMP_MODE": true,
                 "EDITION_STRING": "K1-CN",
                 "TARGET": "Dondji.k1-cn"
             }

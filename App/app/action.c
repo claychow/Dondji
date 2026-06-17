@@ -28,6 +28,9 @@
 #ifdef ENABLE_FMRADIO
     #include "app/fm.h"
 #endif
+#ifdef ENABLE_CAMP_MODE
+    #include "app/camp.h"
+#endif
 #include "app/scanner.h"
 #ifdef ENABLE_AUDIO_BAR
     #include "app/menu.h"
@@ -134,6 +137,11 @@ void (*action_opt_table[])(void) = {
     [ACTION_OPT_REGA_ALARM] = &ACTION_RegaAlarm,
     [ACTION_OPT_REGA_TEST] = &ACTION_RegaTest,
 #endif
+#ifdef ENABLE_CAMP_MODE
+    [ACTION_OPT_CAMP_AIR]  = &CAMP_ActionAirScan,
+    [ACTION_OPT_CAMP_SEA]  = &CAMP_ActionMarineScan,
+    [ACTION_OPT_CAMP_SAVE] = &CAMP_ActionSaveHit,
+#endif
 };
 
 static_assert(ARRAY_SIZE(action_opt_table) == ACTION_OPT_LEN);
@@ -226,6 +234,11 @@ void ACTION_Scan(bool bRestart)
 #endif
 
     GUI_SelectNextDisplay(DISPLAY_MAIN);
+
+#ifdef ENABLE_CAMP_MODE
+    if (CAMP_IsActive() && gScanStateDir == SCAN_OFF)
+        CAMP_Stop();
+#endif
 
     if (gScanStateDir != SCAN_OFF) {
         // already scanning
