@@ -196,6 +196,18 @@
                 "EDITION_STRING": "Fusion",
                 "TARGET": "Dondji.fusion"
             }
+        },
+        {
+            "name": "K1Chinese",
+            "inherits": "Fusion",
+            "cacheVariables": {
+                "ENABLE_FEAT_F4HWN_GAME": false,
+                "ENABLE_FEAT_F4HWN_AUDIO": false,
+                "ENABLE_FEAT_F4HWN_AUDIO_SCOPE": false,
+                "ENABLE_VOICE": false,
+                "EDITION_STRING": "K1-CN",
+                "TARGET": "Dondji.k1-cn"
+            }
         }
     ],
     "buildPresets": [
@@ -226,6 +238,10 @@
         {
             "name": "Fusion",
             "configurePreset": "Fusion"
+        },
+        {
+            "name": "K1Chinese",
+            "configurePreset": "K1Chinese"
         }
     ]
 }

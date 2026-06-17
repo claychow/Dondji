@@ -135,6 +135,9 @@
 | 字库大小 | 42,917 字节 (约 41.9 KB) |
 | SPI Flash 占用 | 2.05% (总容量 2MB) |
 
+Current font layout is v3: the Unicode index is sorted, and the firmware uses
+binary search to speed up Chinese menus and Chinese channel names.
+
 ### 技术说明
 
 - 基于 Web Serial API，通过 USB 串口与设备通信

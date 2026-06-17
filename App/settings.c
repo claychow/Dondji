@@ -34,6 +34,7 @@ uint8_t gUiLanguage = UI_LANGUAGE_EN;
 
 #ifdef ENABLE_CHINESE
 static void SETTINGS_MigrateLegacyCnChannelNamesToUnified(void);
+static bool gCNFontReady;
 #endif
 
 void SETTINGS_InitEEPROM(void)
@@ -1561,30 +1562,70 @@ void SETTINGS_InitCNFont(void)
     // Font data is written to SPI Flash via web tool (USB SPI Flash write command).
     // On boot, just verify the font is valid. If not, Chinese chars will show as blank.
     uint8_t ver;
-    uint16_t probe[2];
+    uint32_t first_entry;
+    uint32_t last_entry;
+    uint16_t first_unicode;
+    uint16_t last_unicode;
     PY25Q16_ReadBuffer(CN_FONT_FLASH_BASE + CN_FONT_VERSION_OFFSET, &ver, 1);
-    PY25Q16_ReadBuffer(CN_FONT_FLASH_BASE, (uint8_t *)probe, 4);
+    PY25Q16_ReadBuffer(CN_FONT_FLASH_BASE + CN_FONT_BITMAP_SIZE, (uint8_t *)&first_entry, 4);
+    PY25Q16_ReadBuffer(CN_FONT_FLASH_BASE + CN_FONT_BITMAP_SIZE + ((uint32_t)(CN_FONT_CHAR_COUNT - 1u) * 4u),
+                       (uint8_t *)&last_entry, 4);
+    first_unicode = (uint16_t)(first_entry >> 16);
+    last_unicode = (uint16_t)(last_entry >> 16);
 
-    if (ver == CN_FONT_VERSION && probe[0] == 0x1100 && probe[1] == 0x2100)
+    gCNFontReady = false;
+    if (ver == CN_FONT_VERSION && first_unicode == 0x4E00u && last_unicode == 0x9F99u)
+    {
+        gCNFontReady = true;
         return;
+    }
 
     // Font not valid - will be written via web tool
     // Chinese channel names will not display until font is flashed
 }
 
+bool SETTINGS_IsCNFontReady(void)
+{
+    return gCNFontReady;
+}
+
 int16_t SETTINGS_CNCharToIndex(uint16_t unicode)
 {
-    // Search the Unicode index table in SPI Flash
-    // Each entry: uint32_t = (unicode:16 | index:16)
-    uint32_t entry;
-    for (uint16_t i = 0; i < CN_FONT_CHAR_COUNT; i++)
+    uint16_t left;
+    uint16_t right;
+
+    if (!gCNFontReady)
     {
-        PY25Q16_ReadBuffer(CN_FONT_FLASH_BASE + CN_FONT_BITMAP_SIZE + (i * 4),
+        return -1;
+    }
+
+    // Search the sorted Unicode index table in SPI Flash.
+    // Each entry: uint32_t = (unicode:16 | index:16)
+    left = 0;
+    right = CN_FONT_CHAR_COUNT;
+    while (left < right)
+    {
+        uint16_t mid = (uint16_t)(left + ((right - left) / 2u));
+        uint32_t entry;
+        uint16_t stored_unicode;
+        uint16_t stored_index;
+
+        PY25Q16_ReadBuffer(CN_FONT_FLASH_BASE + CN_FONT_BITMAP_SIZE + ((uint32_t)mid * 4u),
                            (uint8_t *)&entry, 4);
-        uint16_t stored_unicode = (uint16_t)(entry >> 16);
-        uint16_t stored_index = (uint16_t)(entry & 0xFFFF);
+        stored_unicode = (uint16_t)(entry >> 16);
+        stored_index = (uint16_t)(entry & 0xFFFF);
         if (stored_unicode == unicode)
+        {
             return (int16_t)stored_index;
+        }
+        if (stored_unicode < unicode)
+        {
+            left = (uint16_t)(mid + 1u);
+        }
+        else
+        {
+            right = mid;
+        }
     }
     return -1;
 }
@@ -1606,6 +1647,11 @@ int SETTINGS_CNGetPinyinCandidates(const char *pinyin, uint16_t *unicodeOut, int
     int count = 0;
     int total = 0;
     size_t pinyin_len = strlen(pinyin);
+
+    if (!gCNFontReady)
+    {
+        return 0;
+    }
 
     for (uint16_t i = 0; i < CN_FONT_PY_COUNT && offset < CN_FONT_PY_TOTAL_SIZE; i++)
     {

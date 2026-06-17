@@ -4,10 +4,12 @@
 /firmware.bin
 /compiled-firmware
 .cache
+.npm-cache
 compile_commands.json
 k5_eeprom.raw
 
 /build
+/release-assets
 /serialtool/__pycache__
 
 .DS_Store

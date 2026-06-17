@@ -180,7 +180,7 @@ const CN_FONT_VERSION_OFFSET = 42916;
 const CN_FONT_BITMAP_SIZE = 32928;
 /** 与 App/cn_font_data.h 一致；字库重生成后须同步 */
 const CN_FONT_CHAR_COUNT = 1372;
-const CN_FONT_VERSION     = 2;
+const CN_FONT_VERSION     = 3;
 const SPI_CHUNK_SIZE      = 48;
 const CALIB_SIZE          = 512;
 const LOGO_FLASH_ADDR     = 0x1FF000;
@@ -1090,23 +1090,20 @@ $('fontFlashBtn').addEventListener('click', async () => {
     if (!verResp) log('版本标记写入超时（可能固件不支持 SPI Flash 写入）', 'error');
     else log('版本标记已写入', 'success');
 
-    // Verify: read back first 4 bytes
-    const readMsg = createMessage(MSG_SPI_FLASH_READ, 12);
-    const rv = new DataView(readMsg.buffer);
-    rv.setUint32(4, CN_FONT_FLASH_BASE, true);
-    rv.setUint16(8, 4, true);
-    rv.setUint16(10, 0, true);
-    rv.setUint32(12, ts, true);
-    await sendMessage(readMsg);
-    const readResp = await waitForMsg(MSG_SPI_FLASH_READ_RESP, 100);
-    if (readResp) {
-      const probe = new DataView(readResp.data.buffer);
-      const w0 = probe.getUint16(8, true);
-      const w1 = probe.getUint16(10, true);
-      if (w0 === 0x1100 && w1 === 0x2100)
-        log('验证通过：字库数据正确', 'success');
+    // Verify v3 layout: sorted Unicode index starts at U+4E00 and ends at U+9F99.
+    const indexProbeAddr = CN_FONT_FLASH_BASE + CN_FONT_BITMAP_SIZE;
+    const lastIndexAddr = indexProbeAddr + ((CN_FONT_CHAR_COUNT - 1) * 4);
+    const firstIndexResp = await spiFlashReadChunk(ts, indexProbeAddr, 4);
+    const lastIndexResp = await spiFlashReadChunk(ts, lastIndexAddr, 4);
+    if (firstIndexResp && lastIndexResp) {
+      const firstEntry = new DataView(firstIndexResp.buffer).getUint32(0, true);
+      const lastEntry = new DataView(lastIndexResp.buffer).getUint32(0, true);
+      const firstUnicode = firstEntry >>> 16;
+      const lastUnicode = lastEntry >>> 16;
+      if (firstUnicode === 0x4E00 && lastUnicode === 0x9F99)
+        log('验证通过：字库索引 v3 正确', 'success');
       else
-        log('验证警告：首字节 0x' + w0.toString(16) + ' 0x' + w1.toString(16) + '（期望 0x1100 0x2100）', 'error');
+        log('验证警告：索引边界 U+' + firstUnicode.toString(16) + ' / U+' + lastUnicode.toString(16) + '（期望 U+4E00 / U+9F99）', 'error');
     } else {
       log('验证跳过：读取超时', 'info');
     }

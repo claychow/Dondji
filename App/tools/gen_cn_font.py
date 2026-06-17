@@ -11,6 +11,8 @@ import sys
 from collections import Counter
 from pypinyin import pinyin, Style
 
+CN_FONT_VERSION = 3
+
 
 def load_cn_chars_append(script_dir):
     """
@@ -398,10 +400,8 @@ def build_pinyin_table(char_list):
             syllable_to_indices[py].append(i)
     return syllable_to_indices
 
-def generate_header(char_list, bdf_chars, output_file):
-    """Generate C header with full font data arrays for embedded SPI Flash init"""
-
-    # Filter characters that exist in BDF
+def collect_valid_chars(char_list, bdf_chars):
+    """Filter characters that exist in BDF, then sort by Unicode for fast lookup."""
     valid_chars = []
     missing = []
     for ch in char_list:
@@ -415,7 +415,14 @@ def generate_header(char_list, bdf_chars, output_file):
         print(f"Warning: {len(missing)} characters not found in BDF font:")
         print(''.join(missing))
 
+    valid_chars.sort(key=ord)
     print(f"Valid characters: {len(valid_chars)}")
+    return valid_chars
+
+def generate_header(char_list, bdf_chars, output_file):
+    """Generate C header with full font data arrays for embedded SPI Flash init"""
+
+    valid_chars = collect_valid_chars(char_list, bdf_chars)
 
     # Generate font bitmaps
     font_data = []
@@ -446,6 +453,7 @@ def generate_header(char_list, bdf_chars, output_file):
     with open(output_file, 'w', encoding='utf-8') as f:
         f.write("/* Auto-generated Chinese font + pinyin data for CN channel names */\n")
         f.write("/* Font: WenQuanYi Bitmap Song 9pt (12x12) */\n")
+        f.write("/* Layout v3: Unicode index is sorted for binary search in firmware. */\n")
         f.write(f"/* Characters: {len(valid_chars)}, Pinyin syllables: {len(pinyin_sorted)} */\n\n")
         f.write("#ifndef CN_FONT_DATA_H\n")
         f.write("#define CN_FONT_DATA_H\n\n")
@@ -459,7 +467,7 @@ def generate_header(char_list, bdf_chars, output_file):
         f.write(f"#define CN_FONT_INDEX_SIZE      {index_size}u   /* {len(char_map)} entries x 4 bytes */\n")
         f.write(f"#define CN_FONT_PY_OFFSET       {pinyin_offset}u  /* pinyin table offset from base */\n")
         f.write(f"#define CN_FONT_PY_COUNT        {len(pinyin_sorted)}u\n")
-        f.write(f"#define CN_FONT_VERSION         2u\n")
+        f.write(f"#define CN_FONT_VERSION         {CN_FONT_VERSION}u\n")
         f.write(f"#define CN_FONT_VERSION_OFFSET  {font_size + index_size + total_py_bytes}u  /* version byte offset from base */\n\n")
 
         # ── Font bitmap data ──
@@ -473,9 +481,11 @@ def generate_header(char_list, bdf_chars, output_file):
                     f.write(f"    /* [{ch_idx:3d}] '{valid_chars[ch_idx]}' U+{ord(valid_chars[ch_idx]):04X} */\n")
             if i % 8 == 0:
                 f.write("    ")
-            f.write(f"0x{data:04X}")
             if i < len(font_data) - 1:
-                f.write(", ")
+                separator = "," if i % 8 == 7 else ", "
+                f.write(f"0x{data:04X}{separator}")
+            else:
+                f.write(f"0x{data:04X}")
             if i % 8 == 7:
                 f.write("\n")
         f.write("\n};\n\n")
@@ -487,9 +497,11 @@ def generate_header(char_list, bdf_chars, output_file):
         for i, (unicode_val, idx) in enumerate(char_map):
             if i % 8 == 0:
                 f.write("    ")
-            f.write(f"0x{unicode_val:04X}{idx:04X}")
             if i < len(char_map) - 1:
-                f.write(", ")
+                separator = "," if i % 8 == 7 else ", "
+                f.write(f"0x{unicode_val:04X}{idx:04X}{separator}")
+            else:
+                f.write(f"0x{unicode_val:04X}{idx:04X}")
             if i % 8 == 7:
                 f.write("\n")
         f.write("\n};\n\n")
@@ -533,7 +545,7 @@ def generate_bin(char_list, bdf_chars, output_file):
     """Generate binary file for SPI Flash: [bitmaps][index][pinyin][version]"""
     import struct
 
-    valid_chars = [ch for ch in char_list if ord(ch) in bdf_chars]
+    valid_chars = collect_valid_chars(char_list, bdf_chars)
 
     font_data = []
     char_map = []
@@ -563,7 +575,7 @@ def generate_bin(char_list, bdf_chars, output_file):
             for idx in indices:
                 f.write(struct.pack('>H', idx))
 
-        # Version marker at offset 20825
+        # Version marker
         # Pad to version offset
         font_size = len(font_data) * 2
         index_size = len(char_map) * 4
@@ -577,7 +589,7 @@ def generate_bin(char_list, bdf_chars, output_file):
         current = f.tell()
         if current < version_offset:
             f.write(b'\xff' * (version_offset - current))
-        f.write(struct.pack('B', 2))  # CN_FONT_VERSION = 2
+        f.write(struct.pack('B', CN_FONT_VERSION))
 
     total = os.path.getsize(output_file)
     print(f"Binary: {output_file} ({total} bytes)")

@@ -10,6 +10,7 @@ set -euo pipefail
 #   (ENABLE_CHINESE is ON in the default CMake preset — no extra -D for Chinese UI.)
 #   ./compile-with-docker.sh Bandscope -DENABLE_SPECTRUM=ON
 #   ./compile-with-docker.sh Broadcast -DENABLE_FEAT_F4HWN_GAME=ON -DENABLE_NOAA=ON
+#   ./compile-with-docker.sh K1Chinese
 #   ./compile-with-docker.sh All
 # Default preset: "Custom"
 # ---------------------------------------------
@@ -24,9 +25,9 @@ EXTRA_ARGS=("$@")
 # ---------------------------------------------
 # Validate preset name
 # ---------------------------------------------
-if [[ ! "$PRESET" =~ ^(Custom|Bandscope|Broadcast|Basic|RescueOps|Game|Fusion|All)$ ]]; then
+if [[ ! "$PRESET" =~ ^(Custom|Bandscope|Broadcast|Basic|RescueOps|Game|Fusion|K1Chinese|All)$ ]]; then
   echo "❌ Unknown preset: '$PRESET'"
-  echo "Valid presets are: Custom, Bandscope, Broadcast, Basic, RescueOps, Game, Fusion, All"
+  echo "Valid presets are: Custom, Bandscope, Broadcast, Basic, RescueOps, Game, Fusion, K1Chinese, All"
   exit 1
 fi
 
@@ -78,7 +79,7 @@ copy_fusion_firmware_to_docs() {
 # Handle 'All' preset
 # ---------------------------------------------
 if [[ "$PRESET" == "All" ]]; then
-  PRESETS=(Bandscope Broadcast Basic RescueOps Game Fusion)
+  PRESETS=(Bandscope Broadcast Basic RescueOps Game Fusion K1Chinese)
   for p in "${PRESETS[@]}"; do
     build_preset "$p"
     if [[ "$p" == "Fusion" ]]; then

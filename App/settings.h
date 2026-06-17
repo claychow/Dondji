@@ -339,7 +339,7 @@ void SETTINGS_SaveChannel(uint16_t Channel, uint8_t VFO, const VFO_Info_t *pVFO,
 #define CN_FONT_INDEX_SIZE      5488u
 #define CN_FONT_PY_OFFSET       38416u
 #define CN_FONT_PY_COUNT        334u
-#define CN_FONT_VERSION         2u
+#define CN_FONT_VERSION         3u
 #define CN_FONT_VERSION_OFFSET  42916u
 #define CN_FONT_PY_TOTAL_SIZE   4500u
 #endif
@@ -347,6 +347,7 @@ void SETTINGS_SaveChannel(uint16_t Channel, uint8_t VFO, const VFO_Info_t *pVFO,
 #ifdef ENABLE_CHINESE
 // CN font SPI Flash functions
 void SETTINGS_InitCNFont(void);
+bool SETTINGS_IsCNFontReady(void);
 int16_t SETTINGS_CNCharToIndex(uint16_t unicode);
 void SETTINGS_ReadCNFontBitmap(uint16_t charIndex, uint16_t *bitmap);
 int SETTINGS_CNGetPinyinCandidates(const char *pinyin, uint16_t *unicodeOut, int maxCount, int startOffset);

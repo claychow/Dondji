@@ -2878,25 +2878,14 @@ void UI_DisplayMenu(void)
                 uint32_t kb_x10 = 0u;
                 unsigned int kb_int_part = 0u;
                 unsigned int kb_frac_part = 0u;
-                uint8_t ver_byte = 0u;
-                uint16_t probe_words[2];
-                bool font_spi_ok = false;
+                bool font_spi_ok;
 
                 font_total_bytes = (uint32_t)CN_FONT_VERSION_OFFSET + 1u;
                 kb_x10 = (font_total_bytes * 10u) / 1024u;
                 kb_int_part = (unsigned int)(kb_x10 / 10u);
                 kb_frac_part = (unsigned int)(kb_x10 % 10u);
 
-                PY25Q16_ReadBuffer(CN_FONT_FLASH_BASE + CN_FONT_VERSION_OFFSET, &ver_byte, 1);
-                PY25Q16_ReadBuffer(CN_FONT_FLASH_BASE, (uint8_t *)probe_words, 4);
-                if (ver_byte == CN_FONT_VERSION && probe_words[0] == 0x1100 && probe_words[1] == 0x2100)
-                {
-                    font_spi_ok = true;
-                }
-                else
-                {
-                    font_spi_ok = false;
-                }
+                font_spi_ok = SETTINGS_IsCNFontReady();
 
                 /* 第四页：第一行菜单名带之下留 2px，再排三等分槽位（须与左栏/顶栏标题带一致） */
                 {
