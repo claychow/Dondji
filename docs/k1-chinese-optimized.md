@@ -37,6 +37,8 @@ The K1 Chinese profile includes the Camp scan actions from the K6 field build:
 - `SEA SCAN`: cycles marine VHF FM scan segments.
 - `CAMP SAVE`: saves the current Camp hit or fixed watch point to the first
   free memory channel.
+- `AUTO CQ`: sends a manually triggered Morse call using the current memory
+  channel name as the callsign.
 
 Airband scan enables AM Fix in the K1 preset. Marine scan uses 25 kHz wide FM
 receive bandwidth to better match common VHF marine voice channels.
@@ -59,6 +61,13 @@ Repeated presses of `SEA SCAN` cycle:
 
 AIS channels at 161.975 / 162.025 MHz are intentionally not included because
 analog FM voice scanning is not useful for decoding AIS data.
+
+`AUTO CQ` uses a fixed 700 Hz Morse tone and sends:
+`CQ CQ CQ DE <channel name> <channel name> K`. The current channel must be a
+memory channel, and its channel name must look like an ASCII callsign with both
+letters and digits. TX lock, disallowed frequencies, busy lockout, battery
+state, and AM TX blocking still apply. It is intentionally manual one-shot only,
+not a timed beacon.
 
 ## Required Font Pairing
 

@@ -47,6 +47,7 @@
                 "ENABLE_BLMIN_TMP_OFF": false,
                 "ENABLE_SCAN_RANGES": true,
                 "ENABLE_CAMP_MODE": false,
+                "ENABLE_AUTO_CQ": false,
                 "ENABLE_REGA": false,
                 "ENABLE_EXTRA_UART_CMD": false,
                 "ENABLE_FEAT_F4HWN": true,
@@ -209,6 +210,7 @@
                 "ENABLE_VOICE": false,
                 "ENABLE_AM_FIX": true,
                 "ENABLE_CAMP_MODE": true,
+                "ENABLE_AUTO_CQ": true,
                 "EDITION_STRING": "K1-CN",
                 "TARGET": "Dondji.k1-cn"
             }

@@ -179,6 +179,9 @@ enable_feature(ENABLE_SCAN_RANGES)
 enable_feature(ENABLE_CAMP_MODE
     app/camp.c
 )
+enable_feature(ENABLE_AUTO_CQ
+    app/autocq.c
+)
 
 if(ENABLE_CAMP_MODE AND NOT ENABLE_SCAN_RANGES)
     message(FATAL_ERROR "ENABLE_CAMP_MODE requires ENABLE_SCAN_RANGES.")

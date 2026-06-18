@@ -281,6 +281,9 @@ const char *const gSubMenu_SIDEFUNCTIONS_CN[] = {
     "\xe6\xb5\xb7\xe4\xba\x8b\n\xe6\x89\xab\xe6\x8f\x8f",
     "\xe8\x90\xa5\xe5\x9c\xb0\n\xe4\xbf\x9d\xe5\xad\x98",
 #endif
+#ifdef ENABLE_AUTO_CQ
+    "\xe8\x87\xaa\xe5\x8a\xa8\nCQ",
+#endif
 };
 
 /* 内、计、划 不在嵌入中文字库；第一行用 Inside，第三行用「频段」（字库有 频、段）。 */

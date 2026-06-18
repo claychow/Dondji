@@ -130,6 +130,9 @@ enum ACTION_OPT_t {
     ACTION_OPT_CAMP_SEA,
     ACTION_OPT_CAMP_SAVE,
 #endif
+#ifdef ENABLE_AUTO_CQ
+    ACTION_OPT_AUTO_CQ,
+#endif
     ACTION_OPT_LEN
 };
 

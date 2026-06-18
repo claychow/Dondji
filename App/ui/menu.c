@@ -867,6 +867,9 @@ const t_sidefunction gSubMenu_SIDEFUNCTIONS[] =
     {"SEA\nSCAN",       ACTION_OPT_CAMP_SEA},
     {"CAMP\nSAVE",      ACTION_OPT_CAMP_SAVE},
 #endif
+#ifdef ENABLE_AUTO_CQ
+    {"AUTO\nCQ",        ACTION_OPT_AUTO_CQ},
+#endif
 };
 
 const uint8_t gSubMenu_SIDEFUNCTIONS_size = ARRAY_SIZE(gSubMenu_SIDEFUNCTIONS);

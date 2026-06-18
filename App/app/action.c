@@ -31,6 +31,9 @@
 #ifdef ENABLE_CAMP_MODE
     #include "app/camp.h"
 #endif
+#ifdef ENABLE_AUTO_CQ
+    #include "app/autocq.h"
+#endif
 #include "app/scanner.h"
 #ifdef ENABLE_AUDIO_BAR
     #include "app/menu.h"
@@ -141,6 +144,9 @@ void (*action_opt_table[])(void) = {
     [ACTION_OPT_CAMP_AIR]  = &CAMP_ActionAirScan,
     [ACTION_OPT_CAMP_SEA]  = &CAMP_ActionMarineScan,
     [ACTION_OPT_CAMP_SAVE] = &CAMP_ActionSaveHit,
+#endif
+#ifdef ENABLE_AUTO_CQ
+    [ACTION_OPT_AUTO_CQ]   = &AUTOCQ_Action,
 #endif
 };
 
